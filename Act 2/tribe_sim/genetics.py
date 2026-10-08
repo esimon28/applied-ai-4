@@ -27,34 +27,22 @@ class GeneticAlgorithm:
         return fitness_scores
     
     def select_survivors(self, fitness_scores):
-        # STUDENT ASSIGNMENT 3: Implement a better selection mechanism
-        # Current version just takes top 50% - very simple!
-        #
-        # Available information:
-        # - fitness_scores: list of (gatherer, fitness) tuples, sorted by fitness (best first)
-        # - SURVIVAL_RATE: currently 0.05 (top 5% survive)
-        # - len(fitness_scores): total population size
-        #
-        # Alternative selection strategies to consider:
-        # 1. Tournament selection: pick random groups, take best from each
-        # 2. Roulette wheel: probability proportional to fitness
-        # 3. Rank-based: select based on rank, not raw fitness values
-        # 4. Elite + random: guarantee best survive, then random selection
-        # 5. Fitness-proportionate with scaling (linear/exponential)
-        # 6. Hybrid approaches: combine multiple strategies
-        #
-        # Strategy hints:
-        # - Pure elitism (current) can cause premature convergence
-        # - Pure randomness loses good solutions
-        # - Tournament selection often works well (simple + effective)
-        # - Consider selection pressure: too high = less diversity, too low = slow evolution
-        #
-        # Remember: Selection determines which traits get passed to next generation!
-        
-        # Minimal version: just take top 50% of population
-        survival_count = max(1, len(fitness_scores) // 2)  # Top 50%
-        survivors = [gatherer for gatherer, fitness in fitness_scores[:survival_count]]
-        return survivors
+    if not fitness_scores:
+        return []
+
+    survivor_count = max(1, len(fitness_scores) // 2)
+    candidates = list(fitness_scores)
+    survivors = []
+
+    while candidates and len(survivors) < survivor_count:
+        tournament_size = min(3, len(candidates))
+        tournament = random.sample(candidates, tournament_size)
+        winner = max(tournament, key=lambda item: item[1])
+
+        survivors.append(winner[0])
+        candidates.remove(winner)
+
+    return survivors
     
     def crossover(self, parent1, parent2):
         child_genes = {}
