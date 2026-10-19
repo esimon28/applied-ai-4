@@ -113,15 +113,20 @@ class SkeletonOptimizationAgent(BaselineAgent):
         return 0  # No action
     
     def _get_naive_layout_action(self, current_timestep) -> list:
-        """
-        WEEK 1 STEP 1: Layout optimization - students should improve this!
-        
-        Current problems:
-        - Random swaps with no strategic purpose
-        - Ignores item co-occurrence patterns
-        - No consideration of delivery distances
-        - Wastes manager time on pointless moves
-        """
+    """Attempt layout swaps at regular intervals."""
+    grid_size = self.env.grid_width * self.env.grid_height
+
+    if current_timestep % 10 != 0 or grid_size < 2:
+        return [0, 0]
+
+    pos1 = np.random.randint(0, grid_size)
+    pos2 = np.random.randint(0, grid_size - 1)
+
+    if pos2 >= pos1:
+        pos2 += 1
+
+    return [pos1, pos2]
+   
         
         # TODO WEEK 1 STEP 1: Students should implement intelligent layout optimization
         # Current approach: Occasionally make random swaps
